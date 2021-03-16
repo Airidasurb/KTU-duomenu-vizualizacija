@@ -25,7 +25,7 @@ Išvados:
 
 Atsakymas:
 
-![apdraustieji](img/pavyzdys3.png)
+![apdraustieji](img/3uzd.png)
 
 Išvados:
 
