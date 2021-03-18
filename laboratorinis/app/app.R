@@ -2,6 +2,10 @@
 library(shiny)
 library(tidyverse)
 
+data <- read_csv("../data/lab_sodra.csv")
+datafiltered <- data%>%
+  filter(ecoActCode == 452000)
+
 ui <- fluidPage(
   sidebarLayout(
     sidebarPanel(
@@ -15,7 +19,6 @@ ui <- fluidPage(
   )
 )
 server <- function(input, output, session) {
-  data <- read_csv("../data/lab_sodra.csv")
   updateSelectizeInput(session, "imones_kodas", choices = datafiltered$name, server = TRUE)
   
   output$table <- renderTable(
