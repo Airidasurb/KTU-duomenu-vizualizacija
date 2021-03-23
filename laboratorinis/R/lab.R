@@ -1,39 +1,28 @@
+library(dplyr)
 library(tidyverse)
+library(readr)
 library(ggplot2)
-data <- read_csv("lab_sodra.csv")
-summary(data)
+data <- read_csv("../data/lab_sodra.csv")
 
-datafiltered <- data %>%
-  filter(ecoActCode == 452000)
-
-datafiltered%>%
+data %>%
+  filter(ecoActCode == 452000) %>%
   ggplot(aes(x = avgWage)) +
   geom_histogram(bins = 100)
 
+filtered2 <- data %>%
+  filter(ecoActCode == 452000) %>% group_by(code) %>% 
+  summarise(suma = sum(avgWage)) %>% 
+  arrange(desc(suma)) %>% head(5)
+merged <- merge(filtered2, data, by = "code")
 
-data1 <- datafiltered %>%
-  group_by(name) %>%
- summarise(avg = mean(avgWage)) %>%
-  arrange(desc(avg))
-
-data2 <- merge(datafiltered, data1)
-
-
-data2%>%
-  arrange(desc(avg))%>%
-  head(60)%>%
-ggplot(aes(x = month, y = avgWage, group = name)) + theme_minimal()+
+merged %>% 
+  ggplot(aes(x = month, y = avgWage, group = name)) + theme_minimal()+
   geom_line(aes(colour = name)) + geom_point(aes(color = name)) +
   theme(axis.text.x=element_blank())
 
 
-data2 %>%
-  arrange(desc(avg))%>%
-  head(60)%>%
-  group_by(name)%>%
-  slice_max(numInsured, with_ties = FALSE)%>%
-  head(5)%>%
-ggplot(aes(x = reorder(name,-numInsured), y = numInsured)) + geom_col(aes(fill = name)) + 
+merged %>% group_by(name) %>% 
+  summarise(maxNumInsured = max(numInsured)) %>% 
+  ggplot(aes(x = reorder(name, -maxNumInsured), y = maxNumInsured, fill = name)) 
+ + geom_col(aes(fill = name)) + 
   theme(axis.text.x=element_blank()) + xlab('name')
-
-
